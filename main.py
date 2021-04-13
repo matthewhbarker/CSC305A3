@@ -33,6 +33,38 @@ def main():
 
 
 
+    # Define a screen that has (width X height) numbers of 'pixels'. Each pixel is an RGB triplet
+    # with max value of 255. Even though our actual screen is 2-D it is stored as a 1-D array. Pixels
+    # 0 - 31 are the first row, 32 - 63 are the second row, etc.
+    screen = [scene.back for x in range(scene.res[0] * scene.res[1])]
+
+    # Here is where you would set the value of each pixel
+
+    # Output
+
+    # Header values for the file
+    width = scene.res[0]
+    height = scene.res[1]
+    comment = 'any comment string'
+    ftype = 'P6'  # 'P6' for binary
+
+    # First write the header values
+    ppmfile = open("picture.ppm", 'wb+')  # note the binary flag
+    ppmfile.write("%s\n" % (ftype))
+    ppmfile.write("#%s\n" % comment)
+    ppmfile.write("%d %d\n" % (width, height))
+    ppmfile.write("255\n")
+
+    # Then loop through the screen and write the values
+    for red, green, blue in screen:
+        ppmfile.write("%c%c%c" % (red, green, blue))
+    ppmfile.close()
+
+
+
+
+
+
 def parse(lines):
 
     near = None
@@ -62,8 +94,8 @@ def parse(lines):
             top = re.search("[+-]?\d+(?:\.\d+)?", line).group(0)
         elif re.search("^RES", line):
             res = re.findall("[+-]?\d+(?:\.\d+)?", line)
-            res[0] = float(res[0])
-            res[1] = float(res[1])
+            res[0] = int(res[0])
+            res[1] = int(res[1])
         elif re.search("^SPHERE", line):
             info = line.split()
             name = info[1]
@@ -119,7 +151,6 @@ def parse(lines):
 
     scene = structs.scene(near, left, right, bottom, top, res, spheres, lights, back, ambient, output)
 
-    scene.print_scene()
     return scene
 
 

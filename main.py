@@ -36,7 +36,11 @@ def main():
     # Define a screen that has (width X height) numbers of 'pixels'. Each pixel is an RGB triplet
     # with max value of 255. Even though our actual screen is 2-D it is stored as a 1-D array. Pixels
     # 0 - 31 are the first row, 32 - 63 are the second row, etc.
-    screen = [scene.back for x in range(scene.res[0] * scene.res[1])]
+
+
+    screen = [num_convert(scene.back) for x in range(scene.res[0] * scene.res[1])]
+
+
 
     # Here is where you would set the value of each pixel
 
@@ -46,20 +50,20 @@ def main():
     width = scene.res[0]
     height = scene.res[1]
     comment = 'any comment string'
-    ftype = 'P6'  # 'P6' for binary
+    ftype = 'P6' # 'P6' for binary
+
 
     # First write the header values
-    ppmfile = open("picture.ppm", 'wb+')  # note the binary flag
-    ppmfile.write("%s\n" % (ftype))
-    ppmfile.write("#%s\n" % comment)
-    ppmfile.write("%d %d\n" % (width, height))
-    ppmfile.write("255\n")
+    ppmfile = open(scene.output, 'w+')  # note the binary flag
+    ppmfile.write(("%s\n" % (ftype)))
+    ppmfile.write(("#%s\n" % comment))
+    ppmfile.write(("%d %d\n" % (width, height)))
+    ppmfile.write(("255\n"))
 
     # Then loop through the screen and write the values
     for red, green, blue in screen:
-        ppmfile.write("%c%c%c" % (red, green, blue))
+        ppmfile.write(("%c%c%c" % (red, green, blue)))
     ppmfile.close()
-
 
 
 
@@ -153,6 +157,24 @@ def parse(lines):
 
     return scene
 
+
+def num_convert(rgb):
+    OldMin = 0
+    OldMax = 1
+    NewMin = 0
+    NewMax = 255
+
+    OldValue = rgb
+
+    OldRange = (OldMax - OldMin)
+    NewRange = (NewMax - NewMin)
+
+    newRGB = []
+    newRGB.append(int((((OldValue[0] - OldMin) * NewRange) / OldRange) + NewMin))
+    newRGB.append(int((((OldValue[1] - OldMin) * NewRange) / OldRange) + NewMin))
+    newRGB.append(int((((OldValue[2] - OldMin) * NewRange) / OldRange) + NewMin))
+
+    return newRGB
 
 if __name__ == "__main__":
     main()

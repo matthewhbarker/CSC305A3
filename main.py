@@ -97,15 +97,15 @@ def main():
     width = scene.res[0]
     height = scene.res[1]
     comment = 'any comment string'
-    ftype = 'P6' # 'P6' for binary
+    ftype = 'P3' # 'P6' for binary
 
 
     # First write the header values
-    ppmfile = open(scene.output, 'w+')  # note the binary flag
+    ppmfile = open(scene.output, 'w')  # note the binary flag
     ppmfile.write(("%s\n" % (ftype)))
-    ppmfile.write(("#%s\n" % comment))
+    #ppmfile.write(("#%s\n" % comment))
     ppmfile.write("%d %d\n" % (width, height))
-    ppmfile.write(("255\n"))
+    ppmfile.write("255\n")
 
     # Then loop through the screen and write the values
     #for red, green, blue in screen:
@@ -116,10 +116,12 @@ def main():
             arr = np.array(image[i][j])
             #print("BEFORE CON:", arr)
             rgb = num_convert(arr)
-            if rgb == [0,0,0]:
-                rgb = num_convert([int(scene.back[0]),int(scene.back[1]),int(scene.back[2])])
+            #if rgb == [0,0,0]:
+                #rgb = num_convert([int(scene.back[0]),int(scene.back[1]),int(scene.back[2])])
             #print("AFTER CON:",rgb,"\n")
-            ppmfile.write("%c%c%c" % (rgb[0],rgb[1],rgb[2]))
+            ppmfile.write(" %d %d %d" % (rgb[0],rgb[1],rgb[2]))
+        ppmfile.write("\n")
+
 
     ppmfile.close()
 

@@ -1,67 +1,65 @@
-import struct
+import numpy as np
 
-class sphere:
 
-    name = None
-    posx = None
-    posy = None
-    posz = None
-    sclx = None
-    scly = None
-    sclx = None
-    r = None
-    g = None
-    b = None
-    ka = None
-    kd = None
-    ks = None
-    kr = None
-    n = None
+class Sphere:
 
-    def __init__(self,name, posx, posy, posz, sclx, scly, sclz, r, g , b, ka, kd, ks, kr, n):
+    def __init__(self, name):
         self.name = name
-        self.posx = posx
-        self.posy = posy
-        self.posz = posz
-        self.sclx = sclx
-        self.scly = scly
-        self.sclz = sclz
-        self.r = r
-        self.g = g
-        self.b = b
+        self.x = 0
+        self.y = 0
+        self.z = 0
+        self.scale_x = 1
+        self.scale_y = 1
+        self.scale_z = 1
+        self.color = 0
+        self.ka = 0.5
+        self.kd = 0
+        self.ks = 0
+        self.kr = 0
+        self.n = 0
+
+    def set_position(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
+
+    def set_scale(self, sx, sy, sz):
+        self.scale_x = sx
+        self.scale_y = sy
+        self.scale_z = sz
+
+    def set_color(self, r, g, b):
+        self.ka = np.array([r, g, b])
+
+    def set_diffusion(self, diff):
+        self.kd = diff
+
+    def set_specular(self, spec):
+        self.ks = spec
+
+    def set_reflection(self, ref):
+        self.kr = ref
+
+    def set_other(self, ka, kd, ks, kr):
         self.ka = ka
         self.kd = kd
         self.ks = ks
         self.kr = kr
-        self.n = n
 
-    def print_sphere(self):
-        print("SPHERES:")
-        print("name:", self.name)
-        print("posx:", self.posx)
-        print("posy:", self.posy)
-        print("posz:", self.posz)
-        print("sclx:", self.sclx)
-        print("scly:", self.scly)
-        print("sclz:", self.sclz)
-        print("r:", self.r)
-        print("g:", self.g)
-        print("b:", self.b)
-        print("ka:", self.ka)
-        print("kd:", self.kd)
-        print("ks:", self.ks)
-        print("kr:", self.kr)
-        print("n:", self.n)
+    def output(self):
+        return {'center': np.array([self.x, self.y, self.z]),
+                'radius': 1, 'ambient': self.ka, 'diffuse': self.kd,
+                'specular': self.ks, 'shininess': 0, 'reflection': self.kr}
 
 
-class light:
+class Light:
     name = None
-    posx = None
-    posy = None
-    posz = None
-    lr = None
-    lg = None
-    lb = None
+    posx = 0
+    posy = 0
+    posz = 0
+    lr = 0
+    lg = 0
+    lb = 0
 
     def __init__(self, name, posx, posy, posz, lr, lg, lb):
         self.name = name
@@ -72,25 +70,41 @@ class light:
         self.lg = lg
         self.lb = lb
 
+    def set_position(self, x, y, z):
+        self.posx = x
+        self.posy = y
+        self.posz = z
+
+    def set_color(self, r, g, b):
+        self.lr = r
+        self.lg = g
+        self.lb = b
+
+    def output(self):
+        return {'position': np.array([self.posx, self.posy, self.posz]),
+                'ambient': np.array([self.lr, self.lg, self.lb]), 'diffuse': np.array([0, 0, 0]),
+                'specular': np.array([0, 0, 0])}
+
     def print_light(self):
         print("LIGHTS:")
         print("name:", self.name)
-        print("posx:",self.posx)
-        print("posy:",self.posy)
-        print("posz:",self.posz)
-        print("lr:",self.lr)
-        print("lg:",self.lg)
-        print("lb:",self.lb)
+        print("posx:", self.posx)
+        print("posy:", self.posy)
+        print("posz:", self.posz)
+        print("lr:", self.lr)
+        print("lg:", self.lg)
+        print("lb:", self.lb)
 
-class scene:
+
+class Scene:
     near = None
     left = None
     right = None
     bottom = None
     top = None
     res = None
-    spheres = None
-    lights = None
+    spheres = []
+    lights = []
     back = None
     ambient = None
     output = None
@@ -109,10 +123,10 @@ class scene:
         self.output = output
 
     def print_scene(self):
-        print("NEAR:",self.near)
-        print("LEFT:",self.left)
-        print("RIGHT:",self.right)
-        print("BOTTOM:",self.bottom)
+        print("NEAR:", self.near)
+        print("LEFT:", self.left)
+        print("RIGHT:", self.right)
+        print("BOTTOM:", self.bottom)
         print("TOP:", self.top)
         print("RES:", self.res)
         for sphere in self.spheres:
@@ -121,8 +135,6 @@ class scene:
         for light in self.lights:
             light.print_light()
 
-        print("BACK:",self.back)
-        print("AMBIENT:",self.ambient)
-        print("OUTPUT:",self.output)
-
-
+        print("BACK:", self.back)
+        print("AMBIENT:", self.ambient)
+        print("OUTPUT:", self.output)
